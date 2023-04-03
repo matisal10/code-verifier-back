@@ -12,10 +12,10 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
 //define the first route app
 app.get('/', (req, res) => {
-    res.send('welcome to API Restful: expess + ts + swagger + mongoose');
+    res.status(200).json({ "data": { "message": " Goodbye, world" } });
 });
-app.get('/hello', (req, res) => {
-    res.send('welcome to get route !hello!');
+app.get('/hello/:name', (req, res) => {
+    res.status(200).json({ "data": { "message": `Hola, ${req.params.name ? req.params.name : 'anonimo'}` } });
 });
 //excute app and listen request to port
 app.listen(port, () => {
