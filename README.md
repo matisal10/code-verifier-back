@@ -16,3 +16,5 @@ node express project-back
 - supertest
 - node
 - nodemon
+- eslint
+- concurrently (https://www.npmjs.com/package/concurrently)
