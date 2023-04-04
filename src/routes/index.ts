@@ -6,6 +6,7 @@
 import express, { Request, Response } from 'express';
 import helloRouter from './helloRouter';
 import { LogInfo } from '../utils/logger';
+import goodbyeRouter from './goodbyeRouter';
 
 //server instance
 let server = express()
@@ -22,5 +23,6 @@ rootRouter.get('/', (req: Request, res: Response) => {
 //redireccitions to routers & controllers
 server.use('/', rootRouter)
 server.use('/hello', helloRouter)
+server.use('/goodbye', goodbyeRouter)
 
 export default server
