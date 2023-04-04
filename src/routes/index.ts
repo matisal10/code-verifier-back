@@ -5,7 +5,7 @@
 
 import express, { Request, Response } from 'express';
 import helloRouter from './helloRouter';
-import { LogInfo } from '@/utils/logger';
+import { LogInfo } from '../utils/logger';
 
 //server instance
 let server = express()
@@ -16,7 +16,7 @@ let rootRouter = express.Router()
 //activate for request to http://localhost:8000/api/
 rootRouter.get('/', (req: Request, res: Response) => {
     LogInfo('GET: http://localhost:8000/api/')
-    res.status(200).json({ "data": { "message": " Goodbye, world" } })
+    res.send("welcome to api restful")
 })
 
 //redireccitions to routers & controllers
