@@ -17,4 +17,4 @@ node express project-back
 - node
 - nodemon
 - eslint
-- concurrently (https://www.npmjs.com/package/concurrently)
+- [concurrently](https://www.npmjs.com/package/concurrently)
