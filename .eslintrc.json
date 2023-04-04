@@ -11,5 +11,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "indent":"off",
+        "eol-last": 0
     }
 }

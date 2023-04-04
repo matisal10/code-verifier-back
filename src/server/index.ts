@@ -16,6 +16,9 @@ const server: Express = express();
 //from this point onover: http://localhost:8000/api/
 server.use('/api', router)
 
+//static server
+server.use(express.static('public'))
+
 //TODO: mongoose connection
 
 // security config
