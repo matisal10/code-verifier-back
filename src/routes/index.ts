@@ -4,9 +4,10 @@
  */
 
 import express, { Request, Response } from 'express';
-import HelloRouter from './helloRouter';
 import { LogInfo } from '../utils/logger';
+import HelloRouter from './helloRouter';
 import GoodbyeRouter from './goodbyeRouter';
+import userRouter from './userRouter';
 
 //server instance
 let server = express()
@@ -24,5 +25,6 @@ rootRouter.get('/', (req: Request, res: Response) => {
 server.use('/', rootRouter)
 server.use('/hello', HelloRouter)
 server.use('/goodbye', GoodbyeRouter)
+server.use('/users', userRouter)
 
 export default server

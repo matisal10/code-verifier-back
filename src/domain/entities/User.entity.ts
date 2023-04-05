@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 export const userEntity = () => {
     let userSchema = new mongoose.Schema(
         {
-            name: String,
-            email: String,
-            edad: Number
+            name: { type: String, require: true },
+            email: { type: String, require: true },
+            edad: { type: Number, require: true }
         }
     )
-    return mongoose.model('Users', userSchema)
+    const web = mongoose.model('users', userSchema, 'users')
+    return web
 }
