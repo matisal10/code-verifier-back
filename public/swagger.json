@@ -1,0 +1,123 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"BasicResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object"
+			},
+			"GoodbyeResponse": {
+				"properties": {
+					"date": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"date",
+					"message"
+				],
+				"type": "object"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "code-verifier-back",
+		"version": "1.0.0",
+		"description": "backend node + express + ts + swagger",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {
+			"name": "@matiSal"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/hello": {
+			"get": {
+				"operationId": "GetMessage",
+				"responses": {
+					"200": {
+						"description": "Promise of Basicresponse",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to retreive a message \"hello {name}\" in JSON",
+				"tags": [
+					"HelloController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Name of user to be greeted",
+						"in": "query",
+						"name": "name",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/goodbye": {
+			"get": {
+				"operationId": "GetMessage",
+				"responses": {
+					"200": {
+						"description": "Promise of Goodbyeresponse",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GoodbyeResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to retreive a message \"hello {name}\" in JSON",
+				"tags": [
+					"GoodbyeController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Name of user to be greeted",
+						"in": "query",
+						"name": "name",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

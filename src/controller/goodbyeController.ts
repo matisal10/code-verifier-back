@@ -3,8 +3,8 @@ import { GoodbyeResponse } from "./types";
 import { IgoodbyeController } from "./interfaces";
 import { LogSucces } from "../utils/logger";
 
-@Route("/api/hello")
-@Tags("HelloController")
+@Route("/api/goodbye")
+@Tags("GoodbyeController")
 export class GoodbyeController implements IgoodbyeController {
     /**
      * Endpoint to retreive a message "hello {name}" in JSON
@@ -12,7 +12,7 @@ export class GoodbyeController implements IgoodbyeController {
      * @returns {GoodbyeController} Promise of Goodbyeresponse
      */
     @Get("/")
-    public async getMessage(@Query()name?: string): Promise<GoodbyeResponse> {
+    public async getMessage(@Query() name?: string): Promise<GoodbyeResponse> {
         LogSucces('[/api/goodbye] Get Request')
         return {
             message: `Goodbye ${name || "world!"}`,
