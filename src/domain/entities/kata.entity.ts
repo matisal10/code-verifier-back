@@ -9,8 +9,10 @@ export const kataEntity = () => {
             user: Number,
             date: Date,
             valoration: Number,
-            chances: Number
+            chances: Number,
+            num_valoraciones: Number
         }
     )
-    return mongoose.model('Katas', kataSchema)
+    const katas = mongoose.models.katas || mongoose.model('katas', kataSchema, 'katas')
+    return katas
 }

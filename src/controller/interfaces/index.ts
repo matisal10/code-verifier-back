@@ -16,6 +16,12 @@ export interface IuserController {
     updateUser(id: string, user: any): Promise<any>
 }
 
+export interface IkastasController{
+    //get
+    getKatas(dif?: number): Promise<any>
+    updateKatas(id: string, kata: any,valoration: number): Promise<any>
+}
+
 export interface IgoodbyeController {
     getMessage(name?: string, date?: string): Promise<GoodbyeResponse>
 }

@@ -8,6 +8,7 @@ import { LogInfo } from '../utils/logger';
 import HelloRouter from './helloRouter';
 import GoodbyeRouter from './goodbyeRouter';
 import userRouter from './userRouter';
+import kataRouter from './kataRouter';
 
 //server instance
 let server = express()
@@ -26,5 +27,6 @@ server.use('/', rootRouter)
 server.use('/hello', HelloRouter)
 server.use('/goodbye', GoodbyeRouter)
 server.use('/users', userRouter)
+server.use('/kata', kataRouter)
 
 export default server

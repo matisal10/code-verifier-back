@@ -4,6 +4,7 @@ import { LogSucces, LogError, LogWarning } from "../utils/logger";
 
 //ORM - users collection
 import { createUser, delteUserByID, getAllUsers, getUserByID, updateUserByid } from '../domain/orm/user.orm';
+import { query } from "express";
 
 @Route('/api/users')
 @Tags("userController")
@@ -53,20 +54,40 @@ export class UserController implements IuserController {
         }
         return response
     }
+    /**
+     * Endpoint to create the users in the collection 'Users' of DB
+     * @param user 
+     * @returns message info if CREATED was correct
+     */
     @Post("/")
-    public async createUser(user: any): Promise<any> {
+    public async createUser(@Query() user: any): Promise<any> {
         let response: any = ''
-        await createUser(user).then((r) => {
+        if (user) {
             LogSucces(`[/api/users] Create user :${user}`)
+            await createUser(user).then((r) => {
+                response = {
+                    message: `User created: ${user.name}`
+                }
+            })
+        }
+        else{
+            LogWarning('[/api/users] Create user')
             response = {
-                message: `User created: ${user.name}`
+                message: 'please, provide an User to create from database'
             }
-        })
+        }
+
         return response
     }
+    /**
+     * Endpoint to update the users in the collection 'Users' of DB
+     * @param id ID of user to UPDATE
+     * @param user 
+     * @returns message info if updated was correct
+     */
 
-    @Put('/')
-    public async updateUser(@Query() id: string, user: any): Promise<any> {
+    @Put("/{id}")
+    public async updateUser(@Query() id: string, @Query() user: any): Promise<any> {
         let response: any = ''
         if (id) {
             LogSucces(`[/api/users] Update user by id:${id}`)
