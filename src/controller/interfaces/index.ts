@@ -6,9 +6,14 @@ export interface IhelloController {
 }
 
 export interface IuserController {
-
-    // read all user from database
-    getUsers(): Promise<any>
+    // read all user from database || find user by id
+    getUsers(id?: string): Promise<any>
+    // delete user by id
+    deleteUser(id?: string): Promise<any>
+    //create user
+    createUser(user: any): Promise<any>
+    //update user
+    updateUser(id: string, user: any): Promise<any>
 }
 
 export interface IgoodbyeController {

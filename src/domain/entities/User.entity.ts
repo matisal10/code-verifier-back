@@ -8,6 +8,6 @@ export const userEntity = () => {
             edad: { type: Number, require: true }
         }
     )
-    const web = mongoose.model('users', userSchema, 'users')
-    return web
+    const users = mongoose.models.users|| mongoose.model('users', userSchema, 'users')
+    return users
 }
