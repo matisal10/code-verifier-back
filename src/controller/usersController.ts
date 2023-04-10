@@ -42,6 +42,7 @@ export class UserController implements IuserController {
             LogSucces(`[/api/users] Delete user by id:${id}`)
             await delteUserByID(id).then((r) => {
                 response = {
+                    status: 204,
                     message: `User with id ${id} deleted successfully`
                 }
             })
@@ -49,6 +50,7 @@ export class UserController implements IuserController {
         else {
             LogWarning('[/api/users] Delete user request without id')
             response = {
+                status: 400,
                 message: 'please, provide an ID to remove from database'
             }
         }
@@ -66,13 +68,15 @@ export class UserController implements IuserController {
             LogSucces(`[/api/users] Create user :${user}`)
             await createUser(user).then((r) => {
                 response = {
+                    status: 204,
                     message: `User created: ${user.name}`
                 }
             })
         }
-        else{
+        else {
             LogWarning('[/api/users] Create user')
             response = {
+                status: 400,
                 message: 'please, provide an User to create from database'
             }
         }
@@ -93,6 +97,7 @@ export class UserController implements IuserController {
             LogSucces(`[/api/users] Update user by id:${id}`)
             await updateUserByid(id, user).then((r) => {
                 response = {
+                    status: 200,
                     message: `User with id ${id} updated successfully`
                 }
             })
@@ -100,6 +105,7 @@ export class UserController implements IuserController {
         else {
             LogWarning('[/api/users] Update user request without id')
             response = {
+                status: 400,
                 message: 'please, provide an ID to upoate from database'
             }
         }

@@ -9,6 +9,7 @@ import HelloRouter from './helloRouter';
 import GoodbyeRouter from './goodbyeRouter';
 import userRouter from './userRouter';
 import kataRouter from './kataRouter';
+import authRouter from './authRouter';
 
 //server instance
 let server = express()
@@ -28,5 +29,6 @@ server.use('/hello', HelloRouter)
 server.use('/goodbye', GoodbyeRouter)
 server.use('/users', userRouter)
 server.use('/kata', kataRouter)
+server.use('/auth',authRouter)
 
 export default server
