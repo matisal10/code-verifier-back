@@ -1,5 +1,10 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
+import dotenv from 'dotenv';
+
+dotenv.config()
+
+const secret = process.env.SECRETKEY || 'THISTXTFORJWT'
 
 /**
  * 
@@ -23,15 +28,19 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     }
 
     //Verify then token obtained
-    jwt.verify(token, "", (err: any, decoded: any) => {
-        return res.status(500).send({
-            authenticationError: 'JWT verification failed',
-            message: 'Faild to verify JWT token in request'
-        })
+    jwt.verify(token, secret, (err: any, decoded: any) => {
+        if (err) {
+            return res.status(500).send({
+                authenticationError: 'JWT verification failed',
+                message: 'Faild to verify JWT token in request'
+            })
+        }
+        //pass something to next to request (id of user || other info)
+
+        // execute next function -> protedted routes will be executed 
+        next()
+
     })
 
-    //pass something to next to request (id of user || other info)
-    
-    // execute next function -> protedted routes will be executed 
-    next()
+
 }

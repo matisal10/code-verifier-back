@@ -4,7 +4,11 @@ import { LogInfo } from "../utils/logger";
 
 //bcrypt for password
 import bcrypt from "bcrypt"
-import { IUser } from '../domain/interfaces/IUser.interface';
+import { IUser } from '../domain/interfaces/IUser.interface'
+
+import bodyParser from "body-parser";
+
+let jsonParser = bodyParser.json();
 
 //Router from express
 let userRouter = express.Router()
@@ -41,7 +45,7 @@ userRouter.route('/')
         return res.status(response.status).send(response)
     })
     //post
-    .post(async (req: Request, res: Response) => {
+    .post(jsonParser, async (req: Request, res: Response) => {
         let name: any = req?.query?.name;
         let edad: any = req?.query?.edad;
         let email: any = req?.query?.email;

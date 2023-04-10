@@ -4,7 +4,6 @@ import { LogSucces, LogError, LogWarning } from "../utils/logger";
 
 //ORM - users collection
 import { createUser, delteUserByID, getAllUsers, getUserByID, updateUserByid } from '../domain/orm/user.orm';
-import { query } from "express";
 
 @Route('/api/users')
 @Tags("userController")
@@ -22,6 +21,8 @@ export class UserController implements IuserController {
         if (id) {
             LogSucces(`[/api/users] Get user by id:${id}`)
             response = await getUserByID(id)
+            //Remove password
+            response.password = ''
         }
         else {
             LogSucces('[/api/users] Get Request')
