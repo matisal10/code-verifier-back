@@ -36,11 +36,30 @@ export const getKatasPerDif = async (dif: number): Promise<any[] | undefined> =>
     }
 }
 
-export const getKatasRecent = async (): Promise<any[] | undefined> => {
+export const getKatasRecent = async (page: number, limit: number): Promise<any[] | undefined> => {
     try {
         let katasModel = kataEntity()
+        let response: any = {}
+        await katasModel.find()
+            .sort({ date: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec().then((katas: any[]) => {
+                // users.forEach((user: IUser) => {
+                //     //clean passwords from result
+                //     user.password = ''
+                // })
+                response.katas = katas
+            })
+        // count total document in collection "Users"
+        await katasModel.countDocuments().then((total: number) => {
+            response.totalPages = Math.ceil(total / limit) // number page generated through the limit
+            response.currentPage = page
+        })
+
+        return response
         //search
-        return await katasModel.find().sort({ date: -1 }).limit(5)
+        // return await katasModel.find().sort({ date: -1 }).limit(5)
     } catch (error) {
         LogError(`[ORM ERROR]: Getting recent katas ${error}`)
     }

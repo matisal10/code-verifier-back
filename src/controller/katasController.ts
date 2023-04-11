@@ -8,7 +8,7 @@ import { updateUserByid } from "../domain/orm/user.orm";
 
 export class katasController implements IkastasController {
     
-    public async getKatas(dif?: number): Promise<any> {
+    public async getKatas(page: number,limit: number,dif?: number): Promise<any> {
         let response: any = ''
         if (dif) {
             LogSucces(`[/api/kata] Get kata by id:${dif}`)
@@ -16,7 +16,7 @@ export class katasController implements IkastasController {
         }
         else {
             LogSucces(`[/api/katas] get katas recent`)
-            response = await getKatasRecent()
+            response = await getKatasRecent(page, limit)
         }
         return response
     }

@@ -24,7 +24,7 @@ export interface IAuthController {
 
 export interface IkastasController {
     //get
-    getKatas(dif?: number): Promise<any>
+    getKatas(page: number, limit: number, dif?: number): Promise<any>
     updateKatas(id: string, kata: any, valoration: number): Promise<any>
 }
 

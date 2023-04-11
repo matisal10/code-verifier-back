@@ -19,11 +19,13 @@ kataRouter.route('/')
     .get(verifyToken,async (req: Request, res: Response) => {
         //obtain a query param (id)
         let dif: any = req?.query?.dif
+        let page: any = req?.query?.page || 1
+        let limit: any = req?.query?.limit || 10
         LogInfo(`Query param: ${dif}`)
         //controller instance to excute method 
         const controller: katasController = new katasController()
         //obtain response
-        const response = await controller.getKatas(dif);
+        const response = await controller.getKatas(page, limit, dif);
         //send to he client the response
         return res.send(response)
     })
