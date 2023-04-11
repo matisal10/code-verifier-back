@@ -4,12 +4,19 @@ import { LogInfo } from "../utils/logger";
 // import { createUser } from '../domain/orm/user.orm';
 import { orderByChances } from '../domain/orm/kastas.orm';
 
+//middleware
+import { verifyToken } from "../middlewares/verifyToken.middleware";
+//body parser
+import bodyParser from "body-parser";
+//middleware to read json
+let jsonParser = bodyParser.json()
+
 //Router from express
 let kataRouter = express.Router()
 
 // http://localhost:8000/api/katas?id=''
 kataRouter.route('/')
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken,async (req: Request, res: Response) => {
         //obtain a query param (id)
         let dif: any = req?.query?.dif
         LogInfo(`Query param: ${dif}`)
@@ -20,7 +27,7 @@ kataRouter.route('/')
         //send to he client the response
         return res.send(response)
     })
-    .put(async (req: Request, res: Response) => {
+    .put(verifyToken,async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
         let name: any = req?.query?.name;
@@ -47,7 +54,7 @@ kataRouter.route('/')
         return res.send(response)
     })
 kataRouter.route("/valoration")
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken,async (req: Request, res: Response) => {
         //controller instance to excute method 
         const controller: katasController = new katasController()
         //obtain response
@@ -57,7 +64,7 @@ kataRouter.route("/valoration")
     })
 
 kataRouter.route("/chances")
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken,async (req: Request, res: Response) => {
         //controller instance to excute method 
         const controller: katasController = new katasController()
         //obtain response

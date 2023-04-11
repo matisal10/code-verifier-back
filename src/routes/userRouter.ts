@@ -8,6 +8,9 @@ import { IUser } from '../domain/interfaces/IUser.interface'
 
 import bodyParser from "body-parser";
 
+//middleware
+import { verifyToken } from "../middlewares/verifyToken.middleware";
+
 let jsonParser = bodyParser.json();
 
 //Router from express
@@ -15,7 +18,7 @@ let userRouter = express.Router()
 
 // http://localhost:8000/api/users?id=''
 userRouter.route('/')
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
         LogInfo(`Query param: ${id}`)
@@ -30,7 +33,7 @@ userRouter.route('/')
         return res.status(200).send(response)
     })
     // delete
-    .delete(async (req: Request, res: Response) => {
+    .delete(verifyToken,async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
         LogInfo(`Query param: ${id}`)
@@ -45,27 +48,27 @@ userRouter.route('/')
         return res.status(response.status).send(response)
     })
     //post
-    .post(jsonParser, async (req: Request, res: Response) => {
-        let name: any = req?.query?.name;
-        let edad: any = req?.query?.edad;
-        let email: any = req?.query?.email;
-        LogInfo(`Query param: ${name}, ${email}, ${edad} `)
+    // .post(verifyToken, async (req: Request, res: Response) => {
+    //     let name: any = req?.query?.name;
+    //     let edad: any = req?.query?.edad;
+    //     let email: any = req?.query?.email;
+    //     LogInfo(`Query param: ${name}, ${email}, ${edad} `)
 
-        //controller instance to excute method 
-        const controller: UserController = new UserController()
+    //     //controller instance to excute method 
+    //     const controller: UserController = new UserController()
 
-        //obtain response
-        let user = {
-            name: name || "default name",
-            email: email || "default email",
-            edad: edad || 18
-        }
-        const response: any = await controller.createUser(user);
+    //     //obtain response
+    //     let user = {
+    //         name: name || "default name",
+    //         email: email || "default email",
+    //         edad: edad || 18
+    //     }
+    //     const response: any = await controller.createUser(user);
 
-        //send to he client the response
-        return res.status(201).send(response)
-    })
-    .put(async (req: Request, res: Response) => {
+    //     //send to he client the response
+    //     return res.status(201).send(response)
+    // })
+    .put(verifyToken,async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
         let name: any = req?.query?.name;
