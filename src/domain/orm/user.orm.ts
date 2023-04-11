@@ -5,6 +5,7 @@ import { IAuht } from "../interfaces/IAuth.interfaces";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { UserResponse } from "../types/usersResponse.type";
 
 //configuration of env
 dotenv.config()
@@ -17,11 +18,31 @@ const secret = process.env.SECRETKEY || "THISTXTFORJWT"
 /**
  * method to obtain all users from collection "users" in mongo server
  */
-export const getAllUsers = async (): Promise<any[] | undefined> => {
+export const getAllUsers = async (page: number, limit: number): Promise<any[] | undefined> => {
     try {
         let userModel = userEntity()
-        //search
-        return await userModel.find({})
+        let response: any = {}
+
+        //search all users (using pagination)
+        await userModel.find()
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .select("name email edad")
+            .exec().then((users: IUser[]) => {
+                // users.forEach((user: IUser) => {
+                //     //clean passwords from result
+                //     user.password = ''
+                // })
+                response.users = users
+            })
+        // count total document in collection "Users"
+        await userModel.countDocuments().then((total: number) => {
+            response.totalPages = Math.ceil(total / limit) // number page generated through the limit
+            response.currentPage = page
+        })
+
+        return response
+
     } catch (error) {
         LogError(`[ORM ERROR]: Getting all users ${error}`)
     }
@@ -33,7 +54,7 @@ export const getUserByID = async (id: string): Promise<any | undefined> => {
     try {
         let userModel = userEntity()
         //search by id
-        return await userModel.findById(id)
+        return await userModel.findById(id).select("name email edad")
     } catch (error) {
         LogError(`[ORM ERROR]: Getting users by id ${error}`)
     }
@@ -112,7 +133,7 @@ export const loginUser = async (auth: IAuht): Promise<any | undefined> => {
             expiresIn: "2h"
         })
 
-        return{
+        return {
             user: userFound,
             token: token
         }

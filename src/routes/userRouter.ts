@@ -19,21 +19,23 @@ let userRouter = express.Router()
 // http://localhost:8000/api/users?id=''
 userRouter.route('/')
     .get(verifyToken, async (req: Request, res: Response) => {
-        //obtain a query param (id)
+        //obtain a query param 
         let id: any = req?.query?.id
+        let page: any = req?.query?.page || 1
+        let limit: any = req?.query?.limit || 10
         LogInfo(`Query param: ${id}`)
 
         //controller instance to excute method 
         const controller: UserController = new UserController()
 
         //obtain response
-        const response = await controller.getUsers(id);
+        const response = await controller.getUsers(page, limit, id);
 
         //send to he client the response
         return res.status(200).send(response)
     })
     // delete
-    .delete(verifyToken,async (req: Request, res: Response) => {
+    .delete(verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
         LogInfo(`Query param: ${id}`)
@@ -68,7 +70,7 @@ userRouter.route('/')
     //     //send to he client the response
     //     return res.status(201).send(response)
     // })
-    .put(verifyToken,async (req: Request, res: Response) => {
+    .put(verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
         let name: any = req?.query?.name;

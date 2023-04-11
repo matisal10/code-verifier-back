@@ -70,8 +70,6 @@ export class AuthController implements AuthController {
         if (id) {
             LogSucces(`[/auth/me] Get user data by id:${id}`)
             response = await getUserByID(id)
-            //Remove password
-            response.password = ''
         }
         return response
     }
