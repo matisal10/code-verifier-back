@@ -7,7 +7,8 @@ export const userEntity = () => {
             name: { type: String, require: true },
             email: { type: String, require: true },
             edad: { type: Number, require: true },
-            password: { type: String, require: true }
+            password: { type: String, require: true },
+            katas: { type: [], require: true }
         }
     )
 

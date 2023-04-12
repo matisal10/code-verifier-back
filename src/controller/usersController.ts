@@ -3,7 +3,7 @@ import { IuserController } from "./interfaces";
 import { LogSucces, LogError, LogWarning } from "../utils/logger";
 
 //ORM - users collection
-import { createUser, delteUserByID, getAllUsers, getUserByID, updateUserByid } from '../domain/orm/user.orm';
+import { createUser, delteUserByID, getAllUsers, getKatas, getUserByID, updateUserByid } from '../domain/orm/user.orm';
 
 @Route('/api/users')
 @Tags("userController")
@@ -105,7 +105,23 @@ export class UserController implements IuserController {
             LogWarning('[/api/users] Update user request without id')
             response = {
                 status: 400,
-                message: 'please, provide an ID to upoate from database'
+                message: 'please, provide an ID to update from database'
+            }
+        }
+        return response
+    }
+    @Get('/katas')
+    public async getKatas(@Query() page: number, @Query() limit: number, @Query() id?: string): Promise<any> {
+        let response: any = ''
+        if (id) {
+            LogSucces(`[/api/user/kata] Get katas from user by id:${id}`)
+            response = await getKatas(page,limit,id)
+        }
+        else {
+            LogWarning('[/api/user/kata] Get kata from user request without id')
+            response = {
+                status: 400,
+                message: 'please, provide an ID to get katas from database'
             }
         }
         return response

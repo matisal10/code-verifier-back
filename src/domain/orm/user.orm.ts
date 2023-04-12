@@ -6,6 +6,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { UserResponse } from "../types/usersResponse.type";
+import { kataEntity } from "../entities/kata.entity";
+import { error } from "console";
+import { IKata } from "../interfaces/IKata.interfaces";
+import mongoose from "mongoose";
 
 //configuration of env
 dotenv.config()
@@ -27,7 +31,7 @@ export const getAllUsers = async (page: number, limit: number): Promise<any[] | 
         await userModel.find()
             .limit(limit)
             .skip((page - 1) * limit)
-            .select("name email edad")
+            .select("name email edad katas")
             .exec().then((users: IUser[]) => {
                 // users.forEach((user: IUser) => {
                 //     //clean passwords from result
@@ -48,13 +52,47 @@ export const getAllUsers = async (page: number, limit: number): Promise<any[] | 
     }
 }
 
-// todo: 
+export const getKatas = async (page: number, limit: number, id: string): Promise<any[] | undefined> => {
+    try {
+        let userModel = userEntity()
+        let kataModel = kataEntity()
+        let katasFound: IKata[] = []
+        let response: any = {
+            user: '',
+            katas: []
+        }
+
+        //search all users (using pagination)
+        await userModel.findById(id).then(async (user: IUser) => {
+            response.user = user.email
+            let objectIds: mongoose.Types.ObjectId[] = []
+            user.katas.forEach((kataId: string) => {
+                let objID = new mongoose.Types.ObjectId(kataId)
+                objectIds.push(objID)
+            })
+
+            await kataModel.find({ "_id": { "$in": objectIds } }).then((katas: IKata[]) => {
+                katasFound = katas
+            })
+            response.katas = katasFound
+
+        }).catch((error) => {
+            LogError(`[ORM ERROR]: Getting katas ${error}`)
+        })
+
+        return response
+
+    } catch (error) {
+        LogError(`[ORM ERROR]: Getting all users ${error}`)
+    }
+}
+
 // -get user by id
 export const getUserByID = async (id: string): Promise<any | undefined> => {
     try {
         let userModel = userEntity()
         //search by id
-        return await userModel.findById(id).select("name email edad")
+        return await userModel.findById(id).select("name email edad katas")
     } catch (error) {
         LogError(`[ORM ERROR]: Getting users by id ${error}`)
     }

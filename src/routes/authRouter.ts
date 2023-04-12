@@ -32,7 +32,8 @@ authRouter.route('/register')
                 name,
                 email,
                 edad,
-                password: hashedPassword
+                password: hashedPassword,
+                katas: []
             }
 
             const controller: AuthController = new AuthController()

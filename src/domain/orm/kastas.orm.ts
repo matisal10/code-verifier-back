@@ -1,16 +1,36 @@
 import { kataEntity } from "../entities/kata.entity";
 import { LogError, LogSucces } from "../../utils/logger";
+import { IKata } from "../interfaces/IKata.interfaces";
 
 // crud
 
 /**
  * method to obtain all users from collection "users" in mongo server
  */
-export const getAllKatas = async (): Promise<any[] | undefined> => {
+export const getAllKatas = async (page: number, limit: number): Promise<any[] | undefined> => {
     try {
         let katasModel = kataEntity()
-        //search
-        return await katasModel.find({})
+        let response: any = {}
+        await katasModel.find()
+            .sort({ date: -1 })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec().then((katas: IKata[]) => {
+                // users.forEach((user: IUser) => {
+                //     //clean passwords from result
+                //     user.password = ''
+                // })
+                response.katas = katas
+            })
+        // count total document in collection "Users"
+        await katasModel.countDocuments().then((total: number) => {
+            response.totalPages = Math.ceil(total / limit) // number page generated through the limit
+            response.currentPage = page
+        })
+
+        return response
+        // //search
+        // return await katasModel.find({})
     } catch (error) {
         LogError(`[ORM ERROR]: Getting all katas ${error}`)
     }
@@ -26,6 +46,16 @@ export const getKatasByID = async (id: string): Promise<any | undefined> => {
     }
 }
 
+export const deleteKataByID = async (id: string): Promise<any | undefined> => {
+    try {
+        let katasModel = kataEntity()
+        
+        return await katasModel.deleteOne({ _id: id })
+    } catch (error) {
+        LogError(`[ORM ERROR]: Deleting katas by id ${error}`)
+    }
+}
+
 export const getKatasPerDif = async (dif: number): Promise<any[] | undefined> => {
     try {
         let katasModel = kataEntity()
@@ -33,6 +63,26 @@ export const getKatasPerDif = async (dif: number): Promise<any[] | undefined> =>
         return await katasModel.find({ level: dif })
     } catch (error) {
         LogError(`[ORM ERROR]: Getting per dif katas ${error}`)
+    }
+}
+
+export const createKata = async (kata: IKata): Promise<any[] | undefined> => {
+    try {
+        let katasModel = kataEntity()
+        //create
+        return await katasModel.create(kata)
+    } catch (error) {
+        LogError(`[ORM ERROR]: Creating kata ${error}`)
+    }
+}
+
+export const updateKataByid = async (id: string, kata: IKata): Promise<any | undefined> => {
+    try {
+        let katasModel = kataEntity()
+        //update user
+        return await katasModel.findByIdAndUpdate(id, kata)
+    } catch (error) {
+        LogError(`[ORM ERROR]: Updating kata: ${id} ${error}`)
     }
 }
 
