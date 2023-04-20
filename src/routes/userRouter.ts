@@ -12,6 +12,7 @@ import bodyParser from "body-parser";
 import { verifyToken } from "../middlewares/verifyToken.middleware";
 import { IKata } from "../domain/interfaces/IKata.interfaces";
 import { katasController } from "../controller/katasController";
+import { getKatasPerDif } from '../domain/orm/kastas.orm';
 
 let jsonParser = bodyParser.json();
 
@@ -123,7 +124,7 @@ userRouter.route("/katas")
     .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
-        let { name, description, level, creator, valoration, intents, participants, solution,  } = req.body
+        let { name, description, level, creator, valoration, intents, participants, solution, } = req.body
         let date = req?.body?.date
         let num_valorations = req?.body?.num_valorations
         LogInfo(`Query param: ${id},${name}, ${num_valorations}`)
@@ -143,7 +144,67 @@ userRouter.route("/katas")
                 solution: solution,
                 num_valorations: num_valorations
             }
-            const response: any = await controller.updateKata(id, kata, valoration,creator);
+            const response: any = await controller.updateKata(id, kata, valoration, creator);
+            //send to he client the response
+            return res.status(200).send(response)
+        }
+        else {
+            return res.status(400).send({
+                message: '[ERROR] Updating kata you need to send all attrs'
+            })
+        }
+
+    })
+userRouter.route("/katas/dificultad")
+    .get(verifyToken, async (req: Request, res: Response) => {
+        //controller instance to excute method 
+        const controller: katasController = new katasController()
+        //obtain response
+        const response = await controller.getKatasPerDif();
+        //send to he client the response
+        return res.send(response)
+    })
+userRouter.route("/katas/solucion")
+    .get(jsonParser,verifyToken, async (req: Request, res: Response) => {
+        //controller instance to excute method 
+        let id: any = req?.query?.id
+        let solution = req?.body?.solution
+        if (solution && id) {
+            const controller: katasController = new katasController()
+            //obtain response
+            const response = await controller.getSolution(id);
+            //send to he client the response
+            return res.send(response)
+        } else {
+            return res.status(400).send({
+                message: '[ERROR] need to send solution'
+            })
+        }
+
+    })
+
+userRouter.route("/katas/puntuacion")
+    .get(verifyToken, async (req: Request, res: Response) => {
+        //controller instance to excute method 
+        const controller: katasController = new katasController()
+        //obtain response
+        const response = await controller.getPerValoration();
+        //send to he client the response
+        return res.send(response)
+    })
+    .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
+        //obtain a query param (id)
+        let id: any = req?.query?.id
+        let valoration = req?.body?.valoration
+
+        // LogInfo(`Query param: ${id},${name}, ${num_valorations}`)
+
+        if (valoration) {
+            //controller instance to excute method 
+            const controller: katasController = new katasController()
+            let kata: any = []
+            let creator = ''
+            const response: any = await controller.updateKata(id, kata, valoration, creator);
             //send to he client the response
             return res.status(200).send(response)
         }

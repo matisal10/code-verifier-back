@@ -62,7 +62,7 @@ export const deleteKataByID = async (id: string, creatorId: string): Promise<any
     }
 }
 
-export const getKatasPerDif = async (dif: string): Promise<any[] | undefined> => {
+export const getKatasPerDif = async (): Promise<any[] | undefined> => {
     try {
         let katasModel = kataEntity()
         //search
@@ -161,13 +161,23 @@ export const orderByChances = async (): Promise<any[] | undefined> => {
     }
 }
 
-export const updateValorationByID = async (id: string, kata: any, valoration: number): Promise<any> => {
+export const getSolution = async (id: string): Promise<any> => {
+    try {
+        let katasModel = kataEntity()
+        //search
+        const kat = await katasModel.findById(id)
+        return kat.solution
+    } catch (error) {
+        LogError(`[ORM ERROR]: Getting order chance katas ${error}`)
+    }
+}
+
+export const updateValorationByID = async (id: string, valoration: number): Promise<any> => {
     try {
         let katasModel = kataEntity()
         //search
         const kat = await katasModel.findById(id)
         const nuevoPromedio = ((kat.valoration * kat.num_valorations) + valoration) / (kat.num_valorations + 1);
-        console.log(kat.valoration, kat.num_valorations, valoration)
         return await katasModel.updateOne({ _id: id }, { $set: { valoration: nuevoPromedio.toFixed(1) }, $inc: { num_valorations: 1 } });
     } catch (error) {
         LogError(`[ORM ERROR]: Getting per valoration katas ${error}`)
