@@ -1,4 +1,4 @@
-import { IKata } from "@/domain/interfaces/IKata.interfaces";
+import { IKata } from "../../domain/interfaces/IKata.interfaces";
 import { IUser } from "../../domain/interfaces/IUser.interface";
 import { BasicResponse, GoodbyeResponse } from "../types";
 
@@ -30,11 +30,11 @@ export interface IkastasController {
     //get
     getKatas(page: number, limit: number, dif?: number, id?: string): Promise<any>
 
-    createKata(kata: IKata): Promise<any>
+    createKata(kata: IKata, idUser: String): Promise<any>
 
-    updateKata(id: string, kata: IKata, valoration: number): Promise<any>
+    updateKata(id: string, kata: IKata, valoration: number,creatorId:string): Promise<any>
 
-    deleteKata(id: string): Promise<any>
+    deleteKata(id: string, creatorId: string): Promise<any>
 
     //get all kastas of a user
 

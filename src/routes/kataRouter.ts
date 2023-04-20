@@ -34,8 +34,7 @@ kataRouter.route('/')
     .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
-
-        let { name, description, level, creator, valoration, intents, participants, solution } = req.body
+        let { name, description, level, creator, valoration, intents, participants, solution, date, num_valorations } = req.body
         LogInfo(`Query param: ${id},${name}, ${valoration}`)
 
         if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution) {
@@ -46,13 +45,14 @@ kataRouter.route('/')
                 description: description,
                 level: level,
                 creator: creator,
-                // date: date,
+                date: date,
                 valoration: valoration,
                 intents: intents,
                 participants: participants,
-                solution: solution
+                solution: solution,
+                num_valorations: num_valorations
             }
-            const response: any = await controller.updateKata(id, kata, valoration);
+            const response: any = await controller.updateKata(id, kata, valoration,creator);
             //send to he client the response
             return res.status(200).send(response)
         }
@@ -64,23 +64,24 @@ kataRouter.route('/')
 
     })
     .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
-        let { name, description, level, creator, valoration, intents, participants, solution } = req.body
+        let { name, description, level, creator, valoration, intents, participants, solution, date, num_valorations } = req.body
+        // let idUser: any = req?.query?.id
 
-
-        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution) {
+        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution && date && num_valorations>=0 ) {
             const controller: katasController = new katasController()
             let kata: IKata = {
                 name: name,
                 description: description,
                 level: level,
                 creator: creator,
-                // date: date,
+                date: date,
                 valoration: valoration,
                 intents: intents,
                 participants: participants,
-                solution: solution
+                solution: solution,
+                num_valorations: num_valorations
             }
-            const response: any = await controller.createKata(kata)
+            const response: any = await controller.createKata(kata, creator)
             return res.status(201).send(response)
         }
         else {
@@ -94,13 +95,14 @@ kataRouter.route('/')
     .delete(verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
+        let creatorId: any = req?.query?.creatorId
         LogInfo(`Query param: ${id}`)
 
         //controller instance to excute method 
         const controller: katasController = new katasController()
 
         //obtain response
-        const response = await controller.deleteKata(id);
+        const response = await controller.deleteKata(id, creatorId);
 
         //send to he client the response
         return res.status(response.status).send(response)
@@ -117,6 +119,18 @@ kataRouter.route("/valoration")
 
 kataRouter.route("/chances")
     .get(verifyToken, async (req: Request, res: Response) => {
+        //controller instance to excute method 
+        const controller: katasController = new katasController()
+        //obtain response
+        const response = await controller.getKatasOderByChances();
+        //send to he client the response
+        return res.send(response)
+    })
+
+kataRouter.route("/filter")
+    .get(verifyToken, async (req: Request, res: Response) => {
+        let dif: any = req?.query?.dif
+        let valoration: any = req?.query?.valoration
         //controller instance to excute method 
         const controller: katasController = new katasController()
         //obtain response

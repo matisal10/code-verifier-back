@@ -12,5 +12,7 @@ export interface IKata {
     valoration: number,
     creator: string,
     solution: string,
-    participants: string[]
+    participants: string[],
+    date: Date,
+    num_valorations: number
 }

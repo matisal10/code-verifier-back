@@ -10,6 +10,8 @@ import bodyParser from "body-parser";
 
 //middleware
 import { verifyToken } from "../middlewares/verifyToken.middleware";
+import { IKata } from "../domain/interfaces/IKata.interfaces";
+import { katasController } from "../controller/katasController";
 
 let jsonParser = bodyParser.json();
 
@@ -86,6 +88,71 @@ userRouter.route("/katas")
 
         //send to he client the response
         return res.status(200).send(response)
+    })
+    .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
+        let idUser: any = req?.query?.id
+        let { name, description, level, creator, valoration, intents, participants, solution } = req.body
+        let date = req.body.date
+        let num_valorations = req.body.num_valorations
+
+        LogInfo(`Query param: ${date},${name}, ${num_valorations}`)
+        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution && date && num_valorations >= 0) {
+            const controller: katasController = new katasController()
+            let kata: IKata = {
+                name: name,
+                description: description,
+                level: level,
+                creator: creator,
+                valoration: valoration,
+                intents: intents,
+                participants: participants,
+                solution: solution,
+                date: date,
+                num_valorations: num_valorations
+            }
+            const response: any = await controller.createKata(kata, idUser)
+            return res.status(201).send(response)
+        }
+        else {
+            return res.status(400).send({
+                message: '[ERROR] Updating kata you need to send all attrs'
+            })
+        }
+
+    })
+    .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
+        //obtain a query param (id)
+        let id: any = req?.query?.id
+        let { name, description, level, creator, valoration, intents, participants, solution,  } = req.body
+        let date = req?.body?.date
+        let num_valorations = req?.body?.num_valorations
+        LogInfo(`Query param: ${id},${name}, ${num_valorations}`)
+
+        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution) {
+            //controller instance to excute method 
+            const controller: katasController = new katasController()
+            let kata: IKata = {
+                name: name,
+                description: description,
+                level: level,
+                creator: creator,
+                date: date,
+                valoration: valoration,
+                intents: intents,
+                participants: participants,
+                solution: solution,
+                num_valorations: num_valorations
+            }
+            const response: any = await controller.updateKata(id, kata, valoration,creator);
+            //send to he client the response
+            return res.status(200).send(response)
+        }
+        else {
+            return res.status(400).send({
+                message: '[ERROR] Updating kata you need to send all attrs'
+            })
+        }
+
     })
 
 //Export

@@ -35,14 +35,15 @@ export class AuthController implements AuthController {
     }
     @Post("/login")
     public async loginUser(auth: IAuht): Promise<any> {
-        let response: AuthResponse | undefined | ErrorResponse
+        let response: any
         if (auth) {
 
             LogSucces(`[/api/auth/login] login: ${auth.email}`)
             let data = await loginUser(auth)
             response = {
                 token: data.token,
-                message: `Welcome, ${data.user.name}`
+                message: `Welcome, ${data.user.name}`,
+                id: data.user.id
             }
 
         }

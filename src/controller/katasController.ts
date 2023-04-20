@@ -3,7 +3,7 @@ import { LogSucces, LogError, LogWarning } from "../utils/logger";
 import { Delete, Get, Post, Put, Query, Route, Tags } from "tsoa";
 
 //ORM - katas collection
-import { createKata, deleteKataByID, getAllKatas, getKatasByID, getKatasPerDif, getKatasRecent, getPerValoration, orderByChances, updateKataByid, updateValorationByID } from "../domain/orm/kastas.orm";
+import { createKata, deleteKataByID, getAllKatas, getKatasByID, getKatasPerDif, getKatasPerValoration, getKatasRecent, getPerValoration, orderByChances, updateKataByid, updateValorationByID } from "../domain/orm/kastas.orm";
 import { updateUserByid } from "../domain/orm/user.orm";
 import { IKata } from "@/domain/interfaces/IKata.interfaces";
 
@@ -12,16 +12,17 @@ import { IKata } from "@/domain/interfaces/IKata.interfaces";
 export class katasController implements IkastasController {
 
     @Post("/")
-    public async createKata(@Query() kata: IKata): Promise<any> {
+    public async createKata(@Query() kata: IKata, @Query() idUser: string ): Promise<any> {
         let response: any = ''
         if (kata) {
             LogSucces(`[/api/kata] Create user :${kata.name}`)
-            await createKata(kata).then((r) => {
+            await createKata(kata, idUser).then((r)=>{
                 response = {
-                    status: 204,
-                    message: `kata created: ${kata.name}`
+                    statu: 200,
+                    message: `Kata created successfully`
                 }
             })
+            
         }
         else {
             LogWarning('[/api/kata] Create needs kata entity')
@@ -34,11 +35,11 @@ export class katasController implements IkastasController {
         return response
     }
     @Delete("/")
-    public async deleteKata(@Query() id?: string): Promise<any> {
+    public async deleteKata(@Query() id?: string, @Query() creatorId?: string): Promise<any> {
         let response: any = ''
-        if (id) {
+        if (id  && creatorId) {
             LogSucces(`[/api/kata] Delete user by id:${id}`)
-            await deleteKataByID(id).then((r) => {
+            await deleteKataByID(id,creatorId).then((r) => {
                 response = {
                     status: 200,
                     message: `Kata with id ${id} deleted successfully`
@@ -62,14 +63,8 @@ export class katasController implements IkastasController {
             response = await getKatasByID(id)
         }
         else{
-            if (dif) {
-                LogSucces(`[/api/kata] Get kata per dif:${dif}`)
-                response = await getKatasPerDif(dif)
-            }
-            else {
-                LogSucces(`[/api/katas] get katas recent`)
-                response = await getKatasRecent(page, limit)
-            }
+            // LogSucces(`[/api/kata] Get kata by id:${id}`)
+            response = await getAllKatas(page,limit)
         }
 
         return response
@@ -81,24 +76,40 @@ export class katasController implements IkastasController {
         return response = await getPerValoration()
     }
 
+    @Get("/filter")
+    public async getKatasPerFilter(dif: string, valoration: number): Promise<any> {
+        let response: any = ''
+
+        if (dif) {
+            LogSucces(`[/api/kata] Get kata per dif:${dif}`)
+            response = await getKatasPerDif(dif)
+        }
+        else {
+            LogSucces(`[/api/katas] get katas recent`)
+            response = await getKatasPerValoration(valoration)
+        }
+
+        return response
+    }
+
     @Put("/")
-    public async updateKata(id: string, kata: any, valoration: number): Promise<any> {
+    public async updateKata(id: string, kata: any, valoration: number,creatorId:string): Promise<any> {
         let response: any = ''
         if (id) {
-            // if(valoration){
-            //     LogSucces(`[/api/kata] Update kata by id:${id}`)
-            //     response = await updateValorationByID(id, kata, valoration)
-            // }
-            // else{
+            if(valoration){
                 LogSucces(`[/api/kata] Update kata by id:${id}`)
-                await updateKataByid(id, kata).then((r) => {
-                    response = {
-                        status: 200,
-                        message: `kata update: ${kata.name}`
-                    }
-                })
-            // }
-            
+                response = await updateValorationByID(id, kata, valoration)
+            }
+            else{
+            LogSucces(`[/api/kata] Update kata by id:${id}`)
+            await updateKataByid(id, kata,creatorId).then((r) => {
+                response = {
+                    status: 200,
+                    message: `kata update: ${kata.name}`
+                }
+            })
+            }
+
         }
         else {
             LogWarning('[/api/kata] Update kata request without id')

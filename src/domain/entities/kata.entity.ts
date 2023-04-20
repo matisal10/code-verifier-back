@@ -11,7 +11,9 @@ export const kataEntity = () => {
             valoration: { type: Number, required: true },
             creator: { type: String, required: true },
             solution: { type: String, required: true },
-            participants: { type: [], required: true }
+            participants: { type: [], required: true },
+            date: { type: Date, required: true },
+            num_valorations: { type: Number, required: true }
         }
     )
     const katas = mongoose.models.katas || mongoose.model<IKata>('katas', kataSchema, 'katas')
