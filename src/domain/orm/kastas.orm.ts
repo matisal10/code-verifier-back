@@ -51,14 +51,13 @@ export const deleteKataByID = async (id: string, creatorId: string): Promise<any
     try {
         let katasModel = kataEntity()
         let kata = await katasModel.findOne({ _id: id })
-
-        if (kata.creatorId === creatorId) {
+        if (kata.creator === creatorId) {
             return await katasModel.deleteOne({ _id: id })
         } else {
             throw new Error("Unauthorized to delete this kata")
         }
     } catch (error) {
-        LogError(`[ORM ERROR]: Deleting katas by id \${error}`)
+        LogError(`[ORM ERROR]: Deleting katas by id ${error}`)
     }
 }
 
@@ -97,15 +96,15 @@ export const createKata = async (kata: IKata, idUser: string): Promise<any[] | u
     }
 }
 
-export const updateKataByid = async (id: string, kata: IKata,creatorId: string): Promise<any | undefined> => {
+export const updateKataByid = async (id: string, kataUpdate: IKata, creatorId: string): Promise<any | undefined> => {
     try {
         let katasModel = kataEntity()
         let kata = await katasModel.findOne({ _id: id })
-
-        if (kata.creatorId === creatorId) {
-            return await katasModel.findByIdAndUpdate(id, kata)
+        console.log(kata)
+        if (kata.creator === creatorId) {
+            return await katasModel.findByIdAndUpdate(id, kataUpdate)
         } else {
-            throw new Error("Unauthorized to delete this kata")
+            throw new Error("Unauthorized to update this kata")
         }
     } catch (error) {
         LogError(`[ORM ERROR]: Updating kata: ${id} ${error}`)

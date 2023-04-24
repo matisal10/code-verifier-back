@@ -15,10 +15,10 @@ export class katasController implements IkastasController {
     public async createKata(@Query() kata: IKata, @Query() idUser: string): Promise<any> {
         let response: any = ''
         if (kata) {
-            LogSucces(`[/api/kata] Create user :${kata.name}`)
+            LogSucces(`[/api/kata] Create kata :${kata.name}`)
             await createKata(kata, idUser).then((r) => {
                 response = {
-                    statu: 200,
+                    status: 200,
                     message: `Kata created successfully`
                 }
             })

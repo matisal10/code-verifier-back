@@ -160,9 +160,9 @@ export const loginUser = async (auth: IAuht): Promise<any | undefined> => {
 
         })
         //check if password is valid
-        let validPassword = bcrypt.compareSync(auth.password, userFound!.password)
+        let validPassword = bcrypt.compare(auth.password, userFound!.password)
         if (!validPassword) {
-            console.error(`[ERROR AUTH IN ORM]: password not valid`)
+            console.error(`[ERROR AUTH IN ORM]: password not valid ${auth.password}`)
             throw new Error(`[ERROR AUTH IN ORM]: password not valid`);
         }
 
@@ -170,6 +170,7 @@ export const loginUser = async (auth: IAuht): Promise<any | undefined> => {
         token = jwt.sign({ email: userFound!.email }, secret, {
             expiresIn: "2h"
         })
+        console.log(token)
 
         return {
             user: userFound,
@@ -177,7 +178,7 @@ export const loginUser = async (auth: IAuht): Promise<any | undefined> => {
         }
 
     } catch (error) {
-        LogError(`[ORM ERROR]: creating user: ${error}`)
+        LogError(`[ORM ERROR]: Login user: ${error}`)
     }
 }
 

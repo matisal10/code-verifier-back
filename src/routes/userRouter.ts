@@ -90,6 +90,21 @@ userRouter.route("/katas")
         //send to he client the response
         return res.status(200).send(response)
     })
+    .delete(verifyToken, async (req: Request, res: Response) => {
+        //obtain a query param (id)
+        let id: any = req?.query?.id
+        let creatorId: any = req?.query?.creatorId
+        LogInfo(`Query param: ${id}`)
+
+        //controller instance to excute method 
+        const controller: katasController = new katasController()
+
+        //obtain response
+        const response = await controller.deleteKata(id, creatorId);
+
+        //send to he client the response
+        return res.status(response.status).send(response)
+    })
     .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
         let idUser: any = req?.query?.id
         let { name, description, level, creator, valoration, intents, participants, solution } = req.body
@@ -111,7 +126,7 @@ userRouter.route("/katas")
                 date: date,
                 num_valorations: num_valorations
             }
-            const response: any = await controller.createKata(kata, idUser)
+            const response: any = await controller.createKata(kata, creator)
             return res.status(201).send(response)
         }
         else {
@@ -124,33 +139,36 @@ userRouter.route("/katas")
     .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
+        let idUser: any = req?.query?.creatorId
         let { name, description, level, creator, valoration, intents, participants, solution, } = req.body
         let date = req?.body?.date
         let num_valorations = req?.body?.num_valorations
         LogInfo(`Query param: ${id},${name}, ${num_valorations}`)
-
-        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution) {
-            //controller instance to excute method 
-            const controller: katasController = new katasController()
-            let kata: IKata = {
-                name: name,
-                description: description,
-                level: level,
-                creator: creator,
-                date: date,
-                valoration: valoration,
-                intents: intents,
-                participants: participants,
-                solution: solution,
-                num_valorations: num_valorations
+        if (id) {
+            if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution) {
+                //controller instance to excute method 
+                const controller: katasController = new katasController()
+                let kata: IKata = {
+                    name: name,
+                    description: description,
+                    level: level,
+                    creator: creator,
+                    date: date,
+                    valoration: valoration,
+                    intents: intents,
+                    participants: participants,
+                    solution: solution,
+                    num_valorations: num_valorations
+                }
+                const response: any = await controller.updateKata(id, kata, valoration, idUser);
+                //send to he client the response
+                return res.status(200).send(response)
             }
-            const response: any = await controller.updateKata(id, kata, valoration, creator);
-            //send to he client the response
-            return res.status(200).send(response)
+
         }
         else {
             return res.status(400).send({
-                message: '[ERROR] Updating kata you need to send all attrs'
+                message: '[ERROR] Updating kata you need to send id'
             })
         }
 
@@ -165,7 +183,7 @@ userRouter.route("/katas/dificultad")
         return res.send(response)
     })
 userRouter.route("/katas/solucion")
-    .get(jsonParser,verifyToken, async (req: Request, res: Response) => {
+    .get(jsonParser, verifyToken, async (req: Request, res: Response) => {
         //controller instance to excute method 
         let id: any = req?.query?.id
         let solution = req?.body?.solution
