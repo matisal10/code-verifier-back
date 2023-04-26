@@ -182,11 +182,11 @@ userRouter.route("/katas/dificultad")
         //send to he client the response
         return res.send(response)
     })
-userRouter.route("/katas/solucion")
+userRouter.route("/katas/solution")
     .get(jsonParser, verifyToken, async (req: Request, res: Response) => {
         //controller instance to excute method 
         let id: any = req?.query?.id
-        let solution = req?.body?.solution
+        let solution = req?.query?.solution
         if (solution && id) {
             const controller: katasController = new katasController()
             //obtain response
