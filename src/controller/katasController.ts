@@ -3,7 +3,7 @@ import { LogSucces, LogError, LogWarning } from "../utils/logger";
 import { Delete, Get, Post, Put, Query, Route, Tags } from "tsoa";
 
 //ORM - katas collection
-import { createKata, deleteKataByID, getAllKatas, getKatasByID, getKatasPerDif, getKatasPerValoration, getKatasRecent, getPerValoration, getSolution, orderByChances, updateKataByid, updateValorationByID } from "../domain/orm/kastas.orm";
+import { createKata, deleteKataByID, getAllKatas, getKatasByID, getKatasPerDif, getKatasPerValoration, getKatasRecent, getPerValoration, getSolution, orderByChances, updateKataByid, updateValorationByID, uploadData } from "../domain/orm/kastas.orm";
 import { updateUserByid } from "../domain/orm/user.orm";
 import { IKata } from "@/domain/interfaces/IKata.interfaces";
 
@@ -18,6 +18,7 @@ export class katasController implements IkastasController {
             LogSucces(`[/api/kata] Create kata :${kata.name}`)
             await createKata(kata, idUser).then((r) => {
                 response = {
+                    id: r,
                     status: 200,
                     message: `Kata created successfully`
                 }
@@ -116,7 +117,7 @@ export class katasController implements IkastasController {
         LogSucces(`[/api/katas] get katas recent`)
         return response = await orderByChances()
     }
-    @Put("/solucion")
+    @Get("/solucion")
     public async getSolution(id: string): Promise<any> {
         let response: any = ''
         if (id) {
@@ -132,6 +133,26 @@ export class katasController implements IkastasController {
             LogWarning('[/api/kata] Update kata request without id')
             response = {
                 message: 'please, provide an ID to get solution from database'
+            }
+        }
+        return response
+    }
+    @Post("/UploadFile")
+    public async uploadFile(id: string,file:any): Promise<any> {
+        let response: any = ''
+        if (id) {
+            LogSucces(`[/api/katas] get katas recent`)
+            await uploadData(id,file).then((r) => {
+                response = {
+                    status: 200,
+                    message: `File update successfully`
+                }
+            })
+        }
+        else {
+            LogWarning('[/api/kata] Update kata request without id')
+            response = {
+                message: 'please, provide an ID to update file in database'
             }
         }
         return response

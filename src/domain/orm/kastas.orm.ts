@@ -1,4 +1,4 @@
-import { kataEntity } from "../entities/kata.entity";
+import { kataEntity } from '../entities/kata.entity';
 import { LogError, LogSucces, LogInfo } from '../../utils/logger';
 import { IKata } from "../interfaces/IKata.interfaces";
 import { userEntity } from "../entities/User.entity";
@@ -42,6 +42,7 @@ export const getKatasByID = async (id: string): Promise<any | undefined> => {
         let katasModel = kataEntity()
         //search by id
         return await katasModel.findById(id)
+        
     } catch (error) {
         LogError(`[ORM ERROR]: Getting katas by id ${error}`)
     }
@@ -183,4 +184,12 @@ export const updateValorationByID = async (id: string, valoration: number): Prom
     }
 }
 
+export const uploadData = async (id: string, f: any): Promise<any> => {
+    try {
+        let kataModel = kataEntity()
+        return await kataModel.updateOne({ _id: id },{files: f})
+    } catch (error) {
+        LogError(`[ORM ERROR]: Update kata file ${error}`)
+    }
+}
 

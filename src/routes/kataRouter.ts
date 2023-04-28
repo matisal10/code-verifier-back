@@ -1,4 +1,5 @@
 import express, { Request, Response, response } from "express";
+import fileUpload from 'express-fileupload'
 import { katasController } from "../controller/katasController";
 import { LogInfo } from "../utils/logger";
 // import { createUser } from '../domain/orm/user.orm';
@@ -9,6 +10,7 @@ import { verifyToken } from "../middlewares/verifyToken.middleware";
 //body parser
 import bodyParser from "body-parser";
 import { IKata, KataLevel } from "../domain/interfaces/IKata.interfaces";
+
 //middleware to read json
 let jsonParser = bodyParser.json()
 
@@ -28,12 +30,12 @@ kataRouter.route('/')
         const controller: katasController = new katasController()
         //obtain response
         const response = await controller.getKatas(page, limit, dif, id);
-        //send to he client the response
         return res.send(response)
     })
     .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
         //obtain a query param (id)
         let id: any = req?.query?.id
+        let files: any = req?.files
         let { name, description, level, creator, valoration, intents, participants, solution, date, num_valorations } = req.body
         LogInfo(`Query param: ${id},${name}, ${valoration}`)
 
@@ -50,9 +52,10 @@ kataRouter.route('/')
                 intents: intents,
                 participants: participants,
                 solution: solution,
-                num_valorations: num_valorations
+                num_valorations: num_valorations,
+                files: files
             }
-            const response: any = await controller.updateKata(id, kata, valoration,creator);
+            const response: any = await controller.updateKata(id, kata, valoration, creator);
             //send to he client the response
             return res.status(200).send(response)
         }
@@ -66,8 +69,8 @@ kataRouter.route('/')
     .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
         let { name, description, level, creator, valoration, intents, participants, solution, date, num_valorations } = req.body
         // let idUser: any = req?.query?.id
-
-        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution && date && num_valorations>=0 ) {
+        let files: any = []
+        if (name && description && level && creator && valoration >= 0 && intents >= 0 && participants.length >= 0 && solution && date && num_valorations >= 0) {
             const controller: katasController = new katasController()
             let kata: IKata = {
                 name: name,
@@ -79,7 +82,8 @@ kataRouter.route('/')
                 intents: intents,
                 participants: participants,
                 solution: solution,
-                num_valorations: num_valorations
+                num_valorations: num_valorations,
+                files: files
             }
             const response: any = await controller.createKata(kata, creator)
             return res.status(201).send(response)
@@ -138,6 +142,27 @@ kataRouter.route("/filter")
         //send to he client the response
         return res.send(response)
     })
+
+
+kataRouter.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 }
+}))
+
+kataRouter.route("/UploadFile")
+    // multerUp.single('file'),
+    .post(async (req: Request, res: Response, next) => {
+        // console.log(req.file)
+        // res.sendStatus(200)
+        let id: any = req.query.id
+        let datos: any = req?.files
+        // console.log(datos)
+        const controller: katasController = new katasController()
+        //obtain response
+        const response = await controller.uploadFile(id, datos);
+        //send to he client the response
+        return res.send(response)
+
+    });
 
 
 export default kataRouter

@@ -107,7 +107,7 @@ userRouter.route("/katas")
     })
     .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
         let idUser: any = req?.query?.id
-        let { name, description, level, creator, valoration, intents, participants, solution } = req.body
+        let { name, description, level, creator, valoration, intents, participants, solution,files } = req.body
         let date = req.body.date
         let num_valorations = req.body.num_valorations
 
@@ -124,7 +124,8 @@ userRouter.route("/katas")
                 participants: participants,
                 solution: solution,
                 date: date,
-                num_valorations: num_valorations
+                num_valorations: num_valorations,
+                files: files
             }
             const response: any = await controller.createKata(kata, creator)
             return res.status(201).send(response)
@@ -140,7 +141,7 @@ userRouter.route("/katas")
         //obtain a query param (id)
         let id: any = req?.query?.id
         let idUser: any = req?.query?.creatorId
-        let { name, description, level, creator, valoration, intents, participants, solution, } = req.body
+        let { name, description, level, creator, valoration, intents, participants, solution,files } = req.body
         let date = req?.body?.date
         let num_valorations = req?.body?.num_valorations
         LogInfo(`Query param: ${id},${name}, ${num_valorations}`)
@@ -158,7 +159,8 @@ userRouter.route("/katas")
                     intents: intents,
                     participants: participants,
                     solution: solution,
-                    num_valorations: num_valorations
+                    num_valorations: num_valorations,
+                    files:files
                 }
                 const response: any = await controller.updateKata(id, kata, valoration, idUser);
                 //send to he client the response

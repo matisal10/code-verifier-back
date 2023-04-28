@@ -14,5 +14,6 @@ export interface IKata {
     solution: string,
     participants: string[],
     date: Date,
-    num_valorations: number
+    num_valorations: number,
+    files: Object
 }
